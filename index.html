@@ -314,8 +314,15 @@
                 const groupsData = await groupsRes.json();
                 allGroups = groupsData.data || [];
 
-                const badgesRes = await fetch(`https://badges.roproxy.com/v1/users/${userId}/badges?limit=100&sortOrder=Asc`);
-                const badgesData = await badgesRes.json();
+                // Fetch all badges (handle pagination)
+                let allBadges = [];
+                let cursor = '';
+                do {
+                    const badgesRes = await fetch(`https://badges.roproxy.com/v1/users/${userId}/badges?limit=100&sortOrder=Asc${cursor ? '&cursor=' + cursor : ''}`);
+                    const badgesData = await badgesRes.json();
+                    allBadges = allBadges.concat(badgesData.data || []);
+                    cursor = badgesData.nextPageCursor;
+                } while (cursor);
 
                 const friendsRes = await fetch(`https://friends.roproxy.com/v1/users/${userId}/friends/count`);
                 const friendsData = await friendsRes.json();
@@ -327,7 +334,7 @@
                 const followingData = await followingRes.json();
 
                 loadingDiv.innerHTML = '';
-                displayResults(userData, avatarUrl, allGroups, badgesData.data, friendsData.count, followersData.count, followingData.count);
+                displayResults(userData, avatarUrl, allGroups, allBadges, friendsData.count, followersData.count, followingData.count);
             } catch (err) {
                 loadingDiv.innerHTML = '';
                 errorDiv.innerHTML = `<div class="error">Error: ${err.message}. User may not exist or API is unavailable.</div>`;
