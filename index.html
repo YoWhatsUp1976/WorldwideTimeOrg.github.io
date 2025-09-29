@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox BG check</title>
+    <title>Roblox Account Intelligence</title>
     <style>
         * {
             margin: 0;
@@ -265,7 +265,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Roblox Intelligence</h1>
+            <h1>Roblox Account Intelligence</h1>
             <p>Background Check System</p>
         </div>
 
@@ -301,34 +301,36 @@
             loadingDiv.innerHTML = '<div class="loading">Loading account data...</div>';
 
             try {
-                const userRes = await fetch(`https://users.roblox.com/v1/users/${userId}`);
+                // Using RoProxy to bypass CORS
+                const userRes = await fetch(`https://users.roproxy.com/v1/users/${userId}`);
                 if (!userRes.ok) throw new Error('User not found');
                 const userData = await userRes.json();
 
-                const avatarRes = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png`);
+                const avatarRes = await fetch(`https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png`);
                 const avatarData = await avatarRes.json();
                 const avatarUrl = avatarData.data[0]?.imageUrl || '';
 
-                const groupsRes = await fetch(`https://groups.roblox.com/v2/users/${userId}/groups/roles`);
+                const groupsRes = await fetch(`https://groups.roproxy.com/v2/users/${userId}/groups/roles`);
                 const groupsData = await groupsRes.json();
                 allGroups = groupsData.data || [];
 
-                const badgesRes = await fetch(`https://badges.roblox.com/v1/users/${userId}/badges?limit=100&sortOrder=Asc`);
+                const badgesRes = await fetch(`https://badges.roproxy.com/v1/users/${userId}/badges?limit=100&sortOrder=Asc`);
                 const badgesData = await badgesRes.json();
 
-                const friendsRes = await fetch(`https://friends.roblox.com/v1/users/${userId}/friends/count`);
+                const friendsRes = await fetch(`https://friends.roproxy.com/v1/users/${userId}/friends/count`);
                 const friendsData = await friendsRes.json();
 
-                const followersRes = await fetch(`https://friends.roblox.com/v1/users/${userId}/followers/count`);
+                const followersRes = await fetch(`https://friends.roproxy.com/v1/users/${userId}/followers/count`);
                 const followersData = await followersRes.json();
-                const followingRes = await fetch(`https://friends.roblox.com/v1/users/${userId}/followings/count`);
+                
+                const followingRes = await fetch(`https://friends.roproxy.com/v1/users/${userId}/followings/count`);
                 const followingData = await followingRes.json();
 
                 loadingDiv.innerHTML = '';
                 displayResults(userData, avatarUrl, allGroups, badgesData.data, friendsData.count, followersData.count, followingData.count);
             } catch (err) {
                 loadingDiv.innerHTML = '';
-                errorDiv.innerHTML = `<div class="error">Error: ${err.message}</div>`;
+                errorDiv.innerHTML = `<div class="error">Error: ${err.message}. User may not exist or API is unavailable.</div>`;
             }
         }
 
