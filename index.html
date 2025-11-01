@@ -3,434 +3,456 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox Account Intelligence</title>
+    <title>Worldwide Time Organization - Precision Timekeeping</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
-            font-family: 'Arial', sans-serif;
-            background: #f5f5f5;
+            font-family: 'Courier New', monospace;
+            background: #000;
             min-height: 100vh;
             padding: 20px;
-            color: #333;
+            color: #fff;
         }
-
+        
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
         }
-
-        .header {
-            background: #fff;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-        }
-
-        .header h1 {
-            font-size: 1.5em;
-            color: #222;
-            font-weight: normal;
-        }
-
-        .search-box {
-            background: #fff;
-            padding: 20px;
-            border: 1px solid #ddd;
-            margin-bottom: 20px;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 10px;
-        }
-
-        input[type="text"] {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-        }
-
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #888;
-        }
-
-        button {
-            padding: 10px 25px;
-            background: #333;
-            color: white;
-            border: none;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #555;
-        }
-
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .results {
-            display: none;
-        }
-
-        .profile-card {
-            background: #fff;
-            padding: 25px;
-            border: 1px solid #ddd;
-            margin-bottom: 20px;
-        }
-
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .profile-avatar {
-            width: 80px;
-            height: 80px;
-            border: 1px solid #ccc;
-        }
-
-        .profile-info h2 {
-            color: #222;
-            margin-bottom: 5px;
-            font-size: 1.3em;
-            font-weight: normal;
-        }
-
-        .profile-info p {
-            color: #666;
-            font-size: 0.9em;
-            margin-bottom: 3px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .stat-item {
-            background: #fafafa;
-            padding: 15px;
-            border: 1px solid #e0e0e0;
+        
+        header {
             text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            border-bottom: 3px solid #fff;
         }
-
-        .stat-item h3 {
-            color: #222;
-            font-size: 1.8em;
-            margin-bottom: 5px;
-            font-weight: normal;
-        }
-
-        .stat-item p {
-            color: #666;
-            font-size: 0.85em;
-        }
-
-        .section {
-            background: #fff;
-            padding: 25px;
-            border: 1px solid #ddd;
-            margin-bottom: 20px;
-        }
-
-        .section h2 {
-            color: #222;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #e0e0e0;
-            font-size: 1.2em;
-            font-weight: normal;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-
-        .group-list {
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        .group-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 12px;
-            border: 1px solid #e0e0e0;
+        
+        .logo {
+            font-size: 2.5em;
+            font-weight: bold;
+            letter-spacing: 0.1em;
             margin-bottom: 10px;
-            background: #fafafa;
         }
-
-        .group-emblem {
-            width: 50px;
-            height: 50px;
-            border: 1px solid #ccc;
+        
+        .tagline {
+            font-size: 0.9em;
+            letter-spacing: 0.3em;
+            opacity: 0.8;
+            text-transform: uppercase;
         }
-
-        .group-info {
-            flex: 1;
+        
+        .main-clock {
+            background: #fff;
+            color: #000;
+            border-radius: 0;
+            padding: 50px;
+            margin-bottom: 30px;
+            border: 5px solid #000;
+            box-shadow: 10px 10px 0 rgba(255,255,255,0.1);
         }
-
-        .group-info h3 {
-            color: #222;
-            margin-bottom: 5px;
-            font-size: 1em;
-            font-weight: normal;
-        }
-
-        .group-info p {
-            color: #666;
-            font-size: 0.85em;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 3px 8px;
-            background: #333;
-            color: white;
-            font-size: 0.75em;
-            margin-top: 5px;
-        }
-
-        .error {
-            background: #f8f8f8;
-            color: #333;
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-        }
-
-        .loading {
+        
+        .time-display {
+            font-size: 5em;
             text-align: center;
-            padding: 40px;
-            color: #666;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+            margin-bottom: 10px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .date-display {
+            font-size: 1.5em;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .timezone-info {
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 500;
+        }
+        
+        .controls {
+            background: #fff;
+            color: #000;
+            border-radius: 0;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 3px solid #000;
+        }
+        
+        h2 {
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        
+        .control-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.05em;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #000;
+            border-radius: 0;
             font-size: 1em;
             background: #fff;
-            border: 1px solid #ddd;
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 20px;
-            color: #999;
-        }
-
-        .info-row {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #e0e0e0;
-        }
-
-        .info-row p {
-            margin-bottom: 8px;
-            color: #555;
-            font-size: 0.9em;
-        }
-
-        .info-row strong {
-            color: #222;
-        }
-
-        .warning {
             color: #000;
-            background: #e0e0e0;
-            padding: 8px;
-            margin-top: 10px;
-            border: 1px solid #ccc;
+            font-family: 'Courier New', monospace;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border: 3px solid #000;
+        }
+        
+        button {
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 0;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-family: 'Courier New', monospace;
+        }
+        
+        button:hover {
+            background: #fff;
+            color: #000;
+            border: 2px solid #000;
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0 rgba(255,255,255,0.5);
+        }
+        
+        .calculator {
+            background: #fff;
+            color: #000;
+            border-radius: 0;
+            padding: 30px;
+            border: 3px solid #000;
+            margin-bottom: 30px;
+        }
+        
+        .calc-result {
+            background: #000;
+            color: #fff;
+            padding: 20px;
+            border-radius: 0;
+            margin-top: 20px;
+            min-height: 60px;
+            font-size: 1.1em;
+            border: 2px solid #fff;
+        }
+        
+        .world-clocks {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .world-clock-item {
+            background: #fff;
+            color: #000;
+            border-radius: 0;
+            padding: 25px;
+            border: 3px solid #000;
+            position: relative;
+        }
+        
+        .world-clock-item h3 {
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .world-clock-item .time {
+            font-size: 2.2em;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 5px;
+        }
+        
+        .world-clock-item .date {
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+        
+        .remove-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            margin: 0;
+        }
+        
+        .sync-status {
+            text-align: center;
+            padding: 10px;
+            background: #fff;
+            color: #000;
+            border: 2px solid #000;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.1em;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>Roblox Account Intelligence</h1>
-            <p>Background Check System</p>
+        <header>
+            <div class="logo">WORLDWIDE TIME ORGANIZATION</div>
+            <div class="tagline">Precision Timekeeping • Est. 2025</div>
+        </header>
+
+        <div class="sync-status" id="syncStatus">Synchronizing with atomic time servers...</div>
+
+        <div class="main-clock">
+            <div class="time-display" id="mainTime">--:--:--.---</div>
+            <div class="date-display" id="mainDate">Loading...</div>
+            <div class="timezone-info" id="mainTimezone">UTC</div>
         </div>
 
-        <div class="search-box">
-            <div class="input-group">
-                <input type="text" id="userId" placeholder="Enter Roblox User ID" />
-                <button onclick="searchUser()">Search</button>
+        <div class="controls">
+            <h2>Time Controls</h2>
+            <div class="control-group">
+                <label for="timezoneSelect">Select Timezone</label>
+                <select id="timezoneSelect">
+                    <option value="UTC">UTC - Coordinated Universal Time</option>
+                    <option value="America/New_York">EST - Eastern Time</option>
+                    <option value="America/Chicago">CST - Central Time</option>
+                    <option value="America/Denver">MST - Mountain Time</option>
+                    <option value="America/Los_Angeles">PST - Pacific Time</option>
+                    <option value="Europe/London">GMT - London</option>
+                    <option value="Europe/Paris">CET - Paris</option>
+                    <option value="Europe/Moscow">MSK - Moscow</option>
+                    <option value="Asia/Tokyo">JST - Tokyo</option>
+                    <option value="Asia/Shanghai">CST - Shanghai</option>
+                    <option value="Asia/Dubai">GST - Dubai</option>
+                    <option value="Australia/Sydney">AEDT - Sydney</option>
+                    <option value="Pacific/Auckland">NZDT - Auckland</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="timeFormatSelect">Time Format</label>
+                <select id="timeFormatSelect">
+                    <option value="24">24-Hour (Military Time)</option>
+                    <option value="12">12-Hour (AM/PM)</option>
+                </select>
+            </div>
+            <div class="button-group">
+                <button onclick="syncTime()">Sync with Atomic Clock</button>
+                <button onclick="addWorldClock()">Add World Clock</button>
             </div>
         </div>
 
-        <div id="error"></div>
-        <div id="loading"></div>
-        <div id="results" class="results"></div>
+        <div class="calculator">
+            <h2>Time Calculator</h2>
+            <div class="control-group">
+                <label for="calcType">Calculation Type</label>
+                <select id="calcType">
+                    <option value="difference">Time Difference</option>
+                    <option value="add">Add Time</option>
+                    <option value="convert">Timezone Conversion</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="time1">Time/Timezone 1</label>
+                <input type="datetime-local" id="time1">
+            </div>
+            <div class="control-group">
+                <label for="time2">Time/Timezone 2</label>
+                <input type="datetime-local" id="time2">
+            </div>
+            <button onclick="calculate()">Calculate</button>
+            <div class="calc-result" id="calcResult">Results will appear here</div>
+        </div>
+
+        <div class="world-clocks" id="worldClocks"></div>
     </div>
 
     <script>
-        let allGroups = [];
+        let mainTimezone = 'UTC';
+        let timeOffset = 0;
+        let worldClocks = [];
+        let use24Hour = true;
 
-        async function searchUser() {
-            const userId = document.getElementById('userId').value.trim();
-            const errorDiv = document.getElementById('error');
-            const loadingDiv = document.getElementById('loading');
-            const resultsDiv = document.getElementById('results');
-
-            errorDiv.innerHTML = '';
-            resultsDiv.style.display = 'none';
+        async function syncTime() {
+            const status = document.getElementById('syncStatus');
+            status.textContent = 'Syncing with atomic time servers...';
             
-            if (!userId) {
-                errorDiv.innerHTML = '<div class="error">Please enter a User ID</div>';
-                return;
-            }
-
-            loadingDiv.innerHTML = '<div class="loading">Loading account data...</div>';
-
             try {
-                // Using RoProxy to bypass CORS
-                const userRes = await fetch(`https://users.roproxy.com/v1/users/${userId}`);
-                if (!userRes.ok) throw new Error('User not found');
-                const userData = await userRes.json();
-
-                const avatarRes = await fetch(`https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png`);
-                const avatarData = await avatarRes.json();
-                const avatarUrl = avatarData.data[0]?.imageUrl || '';
-
-                const groupsRes = await fetch(`https://groups.roproxy.com/v2/users/${userId}/groups/roles`);
-                const groupsData = await groupsRes.json();
-                allGroups = groupsData.data || [];
-
-                // Fetch all badges (handle pagination)
-                let allBadges = [];
-                let cursor = '';
-                do {
-                    const badgesRes = await fetch(`https://badges.roproxy.com/v1/users/${userId}/badges?limit=100&sortOrder=Asc${cursor ? '&cursor=' + cursor : ''}`);
-                    const badgesData = await badgesRes.json();
-                    allBadges = allBadges.concat(badgesData.data || []);
-                    cursor = badgesData.nextPageCursor;
-                } while (cursor);
-
-                const friendsRes = await fetch(`https://friends.roproxy.com/v1/users/${userId}/friends/count`);
-                const friendsData = await friendsRes.json();
-
-                const followersRes = await fetch(`https://friends.roproxy.com/v1/users/${userId}/followers/count`);
-                const followersData = await followersRes.json();
+                const response = await fetch('https://worldtimeapi.org/api/timezone/' + mainTimezone);
+                const data = await response.json();
                 
-                const followingRes = await fetch(`https://friends.roproxy.com/v1/users/${userId}/followings/count`);
-                const followingData = await followingRes.json();
-
-                loadingDiv.innerHTML = '';
-                displayResults(userData, avatarUrl, allGroups, allBadges, friendsData.count, followersData.count, followingData.count);
-            } catch (err) {
-                loadingDiv.innerHTML = '';
-                errorDiv.innerHTML = `<div class="error">Error: ${err.message}. User may not exist or API is unavailable.</div>`;
+                const serverTime = new Date(data.datetime);
+                const localTime = new Date();
+                timeOffset = serverTime - localTime;
+                
+                status.textContent = '✓ Synchronized with atomic clock - Offset: ' + Math.abs(timeOffset) + 'ms';
+                setTimeout(() => {
+                    status.textContent = 'Time synchronized • Precision: ±50ms';
+                }, 2000);
+            } catch (error) {
+                status.textContent = '⚠ Using local system time - Network sync unavailable';
             }
         }
 
-        function displayResults(user, avatar, groups, badges, friends, followers, following) {
-            const resultsDiv = document.getElementById('results');
-            const accountAge = Math.floor((Date.now() - new Date(user.created).getTime()) / (1000 * 60 * 60 * 24));
-
-            resultsDiv.innerHTML = `
-                <div class="profile-card">
-                    <div class="profile-header">
-                        <img src="${avatar}" alt="Avatar" class="profile-avatar" />
-                        <div class="profile-info">
-                            <h2>${user.displayName}</h2>
-                            <p>@${user.name}</p>
-                            <p>User ID: ${user.id}</p>
-                        </div>
-                    </div>
-
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <h3>${badges.length}</h3>
-                            <p>Total Badges</p>
-                        </div>
-                        <div class="stat-item">
-                            <h3>${groups.length}</h3>
-                            <p>Groups</p>
-                        </div>
-                        <div class="stat-item">
-                            <h3>${friends}</h3>
-                            <p>Friends</p>
-                        </div>
-                        <div class="stat-item">
-                            <h3>${followers}</h3>
-                            <p>Followers</p>
-                        </div>
-                        <div class="stat-item">
-                            <h3>${following}</h3>
-                            <p>Following</p>
-                        </div>
-                        <div class="stat-item">
-                            <h3>${accountAge}</h3>
-                            <p>Days Old</p>
-                        </div>
-                    </div>
-
-                    <div class="info-row">
-                        <p><strong>Account Created:</strong> ${new Date(user.created).toLocaleDateString()}</p>
-                        <p><strong>Description:</strong> ${user.description || 'No description'}</p>
-                        ${user.isBanned ? '<div class="warning">Account is Banned</div>' : ''}
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h2>Groups (${groups.length})</h2>
-                    <input type="text" class="search-input" placeholder="Search groups..." onkeyup="filterGroups(this.value)" />
-                    <div class="group-list" id="groupList"></div>
-                </div>
-            `;
-
-            displayGroups(groups);
-            resultsDiv.style.display = 'block';
+        function updateMainClock() {
+            const now = new Date(Date.now() + timeOffset);
+            
+            const time = now.toLocaleTimeString('en-US', {
+                timeZone: mainTimezone,
+                hour12: !use24Hour,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
+            const ms = now.getMilliseconds().toString().padStart(3, '0');
+            
+            const date = now.toLocaleDateString('en-US', {
+                timeZone: mainTimezone,
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            document.getElementById('mainTime').textContent = time + '.' + ms;
+            document.getElementById('mainDate').textContent = date;
         }
 
-        function displayGroups(groups) {
-            const groupList = document.getElementById('groupList');
-            if (groups.length === 0) {
-                groupList.innerHTML = '<div class="no-results">No groups found</div>';
+        function updateWorldClocks() {
+            worldClocks.forEach((clock, index) => {
+                const elem = document.getElementById('wc-' + index);
+                if (elem) {
+                    const now = new Date(Date.now() + timeOffset);
+                    
+                    const time = now.toLocaleTimeString('en-US', {
+                        timeZone: clock.timezone,
+                        hour12: false,
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    });
+                    
+                    const date = now.toLocaleDateString('en-US', {
+                        timeZone: clock.timezone,
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                    });
+                    
+                    elem.querySelector('.time').textContent = time;
+                    elem.querySelector('.date').textContent = date;
+                }
+            });
+        }
+
+        function addWorldClock() {
+            const select = document.getElementById('timezoneSelect');
+            const timezone = select.value;
+            const name = select.options[select.selectedIndex].text;
+            
+            if (worldClocks.some(c => c.timezone === timezone)) {
+                alert('This timezone is already displayed');
                 return;
             }
-
-            groupList.innerHTML = groups.map(g => `
-                <div class="group-item">
-                    <img src="https://www.roblox.com/group-thumbnails?params=[{groupId:${g.group.id}}]" class="group-emblem" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27100%27 height=%27100%27%3E%3Crect fill=%27%23ddd%27 width=%27100%27 height=%27100%27/%3E%3C/svg%3E'" />
-                    <div class="group-info">
-                        <h3>${g.group.name}</h3>
-                        <p>ID: ${g.group.id} | Members: ${g.group.memberCount?.toLocaleString() || 'Unknown'}</p>
-                        <span class="badge">${g.role.name}</span>
-                    </div>
-                </div>
-            `).join('');
+            
+            const index = worldClocks.length;
+            worldClocks.push({ timezone, name });
+            
+            const container = document.getElementById('worldClocks');
+            const div = document.createElement('div');
+            div.className = 'world-clock-item';
+            div.id = 'wc-' + index;
+            div.innerHTML = `
+                <button class="remove-btn" onclick="removeWorldClock(${index})">✕</button>
+                <h3>${name}</h3>
+                <div class="time">--:--:--</div>
+                <div class="date">Loading...</div>
+            `;
+            container.appendChild(div);
+            
+            updateWorldClocks();
         }
 
-        function filterGroups(query) {
-            const filtered = allGroups.filter(g => 
-                g.group.name.toLowerCase().includes(query.toLowerCase()) ||
-                g.role.name.toLowerCase().includes(query.toLowerCase())
-            );
-            displayGroups(filtered);
+        function removeWorldClock(index) {
+            const elem = document.getElementById('wc-' + index);
+            if (elem) elem.remove();
+            worldClocks[index] = null;
         }
 
-        document.getElementById('userId').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') searchUser();
+        function calculate() {
+            const type = document.getElementById('calcType').value;
+            const time1 = new Date(document.getElementById('time1').value);
+            const time2 = new Date(document.getElementById('time2').value);
+            const result = document.getElementById('calcResult');
+            
+            if (!time1 || !time2 || isNaN(time1) || isNaN(time2)) {
+                result.textContent = 'Please enter valid times';
+                return;
+            }
+            
+            if (type === 'difference') {
+                const diff = Math.abs(time2 - time1);
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                result.textContent = `Time Difference: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+            } else if (type === 'add') {
+                const sum = new Date(time1.getTime() + (time2.getTime() - new Date(0).getTime()));
+                result.textContent = `Result: ${sum.toLocaleString()}`;
+            } else {
+                result.textContent = `Time 1: ${time1.toLocaleString()}\nTime 2: ${time2.toLocaleString()}`;
+            }
+        }
+
+        document.getElementById('timezoneSelect').addEventListener('change', (e) => {
+            mainTimezone = e.target.value;
+            document.getElementById('mainTimezone').textContent = e.target.options[e.target.selectedIndex].text;
+            syncTime();
         });
+
+        syncTime();
+        setInterval(updateMainClock, 10);
+        setInterval(updateWorldClocks, 1000);
     </script>
 </body>
 </html>
