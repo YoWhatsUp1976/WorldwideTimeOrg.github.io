@@ -301,6 +301,111 @@
             <div class="calc-result" id="calcResult">Results will appear here</div>
         </div>
 
+        <div class="calculator">
+            <h2>Leap Year Tracker</h2>
+            <div id="leapYearInfo" style="background: #000; color: #fff; padding: 20px; border: 2px solid #fff; margin-bottom: 15px;">
+                <div style="font-size: 1.3em; margin-bottom: 10px;"></div>
+            </div>
+            <div class="control-group">
+                <label for="leapYearInput">Check Year</label>
+                <input type="number" id="leapYearInput" placeholder="Enter year (e.g., 2024)" min="1" max="9999">
+            </div>
+            <button onclick="checkLeapYear()">Check Leap Year</button>
+            <div class="calc-result" id="leapResult">Enter a year to check if it's a leap year</div>
+        </div>
+
+        <div class="calculator">
+            <h2>Unix Timestamp Converter</h2>
+            <div class="control-group">
+                <label for="unixInput">Unix Timestamp (seconds)</label>
+                <input type="number" id="unixInput" placeholder="e.g., 1730419200">
+            </div>
+            <button onclick="convertUnix()">Convert to Date</button>
+            <button onclick="getCurrentUnix()">Get Current Timestamp</button>
+            <div class="calc-result" id="unixResult">Unix timestamp: <span id="currentUnix">Loading...</span></div>
+        </div>
+
+        <div class="calculator">
+            <h2>Day Counter</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px;">
+                <div style="background: #000; color: #fff; padding: 20px; border: 2px solid #fff; text-align: center;">
+                    <div style="font-size: 0.9em; margin-bottom: 5px;">Days This Year</div>
+                    <div style="font-size: 2em; font-weight: bold;" id="daysThisYear">0</div>
+                </div>
+                <div style="background: #000; color: #fff; padding: 20px; border: 2px solid #fff; text-align: center;">
+                    <div style="font-size: 0.9em; margin-bottom: 5px;">Days Remaining</div>
+                    <div style="font-size: 2em; font-weight: bold;" id="daysRemaining">0</div>
+                </div>
+            </div>
+            <div style="background: #000; color: #fff; padding: 20px; border: 2px solid #fff; margin-bottom: 15px;">
+                <div style="font-size: 0.9em; margin-bottom: 5px;">Day of Year</div>
+                <div style="font-size: 1.5em; font-weight: bold;" id="dayOfYear">0</div>
+                <div style="margin-top: 10px; font-size: 0.9em;" id="weekNumber"></div>
+            </div>
+        </div>
+
+        <div class="calculator">
+            <h2>Timezone Offset Calculator</h2>
+            <div class="control-group">
+                <label for="tz1Select">Timezone 1</label>
+                <select id="tz1Select">
+                    <option value="UTC">UTC</option>
+                    <option value="America/New_York">EST - Eastern Time</option>
+                    <option value="America/Chicago">CST - Central Time</option>
+                    <option value="America/Los_Angeles">PST - Pacific Time</option>
+                    <option value="Europe/London">GMT - London</option>
+                    <option value="Asia/Tokyo">JST - Tokyo</option>
+                    <option value="Australia/Sydney">AEDT - Sydney</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="tz2Select">Timezone 2</label>
+                <select id="tz2Select">
+                    <option value="America/New_York">EST - Eastern Time</option>
+                    <option value="UTC">UTC</option>
+                    <option value="America/Chicago">CST - Central Time</option>
+                    <option value="America/Los_Angeles">PST - Pacific Time</option>
+                    <option value="Europe/London">GMT - London</option>
+                    <option value="Asia/Tokyo">JST - Tokyo</option>
+                    <option value="Australia/Sydney">AEDT - Sydney</option>
+                </select>
+            </div>
+            <button onclick="calculateTimezoneOffset()">Calculate Offset</button>
+            <div class="calc-result" id="tzOffsetResult">Select timezones to compare</div>
+        </div>
+
+        <div class="calculator">
+            <h2>Stopwatch & Timer</h2>
+            <div style="background: #000; color: #fff; padding: 30px; border: 2px solid #fff; text-align: center; margin-bottom: 15px;">
+                <div style="font-size: 3em; font-weight: bold; font-family: 'Courier New', monospace;" id="stopwatchDisplay">00:00:00.000</div>
+            </div>
+            <div class="button-group">
+                <button onclick="startStopwatch()">Start</button>
+                <button onclick="pauseStopwatch()">Pause</button>
+                <button onclick="resetStopwatch()">Reset</button>
+                <button onclick="lapStopwatch()">Lap</button>
+            </div>
+            <div class="calc-result" id="lapTimes">Lap times will appear here</div>
+        </div>
+
+        <div class="calculator">
+            <h2>Atomic Clock Metrics</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div style="background: #000; color: #fff; padding: 20px; border: 2px solid #fff; text-align: center;">
+                    <div style="font-size: 0.8em; margin-bottom: 5px;">MILLISECONDS TODAY</div>
+                    <div style="font-size: 1.3em; font-weight: bold;" id="msToday">0</div>
+                </div>
+                <div style="background: #000; color: #fff; padding: 20px; border: 2px solid #fff; text-align: center;">
+                    <div style="font-size: 0.8em; margin-bottom: 5px;">SECONDS THIS YEAR</div>
+                    <div style="font-size: 1.3em; font-weight: bold;" id="secondsYear">0</div>
+                </div>
+                <div style="background: #000; color: #fff; padding: 20px; border: 2px solid #fff; text-align: center;">
+                    <div style="font-size: 0.8em; margin-bottom: 5px;">HEARTBEATS (AVG 70 BPM)</div>
+                    <div style="font-size: 1.3em; font-weight: bold;" id="heartbeats">0</div>
+                </div>
+            </div>
+        </div>
+
         <div class="world-clocks" id="worldClocks"></div>
 
         <footer style="text-align: center; margin-top: 50px; padding: 30px 0; border-top: 3px solid #fff;">
@@ -318,13 +423,18 @@
         let timeOffset = 0;
         let worldClocks = [];
         let use24Hour = true;
+        let stopwatchRunning = false;
+        let stopwatchStart = 0;
+        let stopwatchElapsed = 0;
+        let stopwatchInterval = null;
+        let lapCount = 0;
 
         async function syncTime() {
             const status = document.getElementById('syncStatus');
             status.textContent = 'Syncing with atomic time servers...';
             
             try {
-                
+                // Try WorldTimeAPI first
                 const response = await fetch('https://worldtimeapi.org/api/timezone/' + mainTimezone);
                 
                 if (!response.ok) {
@@ -341,7 +451,7 @@
                     status.textContent = 'Time synchronized • Precision: ±50ms';
                 }, 2000);
             } catch (error) {
-            
+                // Fallback to timeapi.io
                 try {
                     const response = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=' + mainTimezone);
                     const data = await response.json();
@@ -384,6 +494,206 @@
             
             document.getElementById('mainTime').textContent = time + '.' + ms;
             document.getElementById('mainDate').textContent = date;
+            
+            // Update atomic metrics
+            updateAtomicMetrics(now);
+        }
+
+        function updateAtomicMetrics(now) {
+            // Milliseconds today
+            const startOfDay = new Date(now);
+            startOfDay.setHours(0, 0, 0, 0);
+            const msToday = now - startOfDay;
+            document.getElementById('msToday').textContent = msToday.toLocaleString();
+            
+            // Seconds this year
+            const startOfYear = new Date(now.getFullYear(), 0, 1);
+            const secondsYear = Math.floor((now - startOfYear) / 1000);
+            document.getElementById('secondsYear').textContent = secondsYear.toLocaleString();
+            
+            // Heartbeats (70 bpm from start of year)
+            const heartbeats = Math.floor(secondsYear * 70 / 60);
+            document.getElementById('heartbeats').textContent = heartbeats.toLocaleString();
+            
+            // Current Unix timestamp
+            document.getElementById('currentUnix').textContent = Math.floor(now.getTime() / 1000);
+        }
+
+        function updateDayCounter() {
+            const now = new Date(Date.now() + timeOffset);
+            const startOfYear = new Date(now.getFullYear(), 0, 1);
+            const endOfYear = new Date(now.getFullYear() + 1, 0, 1);
+            
+            const dayOfYear = Math.floor((now - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
+            const totalDays = Math.floor((endOfYear - startOfYear) / (1000 * 60 * 60 * 24));
+            const daysRemaining = totalDays - dayOfYear;
+            
+            document.getElementById('dayOfYear').textContent = `Day ${dayOfYear} of ${totalDays}`;
+            document.getElementById('daysThisYear').textContent = dayOfYear;
+            document.getElementById('daysRemaining').textContent = daysRemaining;
+            
+            // Week number
+            const onejan = new Date(now.getFullYear(), 0, 1);
+            const weekNum = Math.ceil((((now - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+            document.getElementById('weekNumber').textContent = `Week ${weekNum} of 52`;
+        }
+
+        function updateLeapYearInfo() {
+            const now = new Date(Date.now() + timeOffset);
+            const year = now.getFullYear();
+            const isLeap = isLeapYear(year);
+            const nextLeap = findNextLeapYear(year);
+            
+            const info = document.getElementById('leapYearInfo').querySelector('div');
+            info.innerHTML = `
+                ${year} ${isLeap ? 'IS' : 'IS NOT'} A LEAP YEAR<br>
+                <span style="font-size: 0.8em; opacity: 0.8;">Next leap year: ${nextLeap} (${nextLeap - year} years away)</span>
+            `;
+        }
+
+        function isLeapYear(year) {
+            return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+        }
+
+        function findNextLeapYear(year) {
+            let next = year + 1;
+            while (!isLeapYear(next)) {
+                next++;
+            }
+            return next;
+        }
+
+        function checkLeapYear() {
+            const input = document.getElementById('leapYearInput').value;
+            const year = parseInt(input);
+            const result = document.getElementById('leapResult');
+            
+            if (!year || year < 1 || year > 9999) {
+                result.textContent = 'Please enter a valid year (1-9999)';
+                return;
+            }
+            
+            const isLeap = isLeapYear(year);
+            const prevLeap = year - 1;
+            const nextLeap = year + 1;
+            
+            let prev = prevLeap;
+            while (!isLeapYear(prev) && prev > year - 10) prev--;
+            
+            let next = nextLeap;
+            while (!isLeapYear(next) && next < year + 10) next++;
+            
+            result.innerHTML = `
+                <strong>${year}</strong> ${isLeap ? 'IS A LEAP YEAR' : 'IS NOT A LEAP YEAR'}<br><br>
+                ${isLeap ? `This year has 366 days (extra day: February 29)` : `This year has 365 days`}<br>
+                Previous leap year: ${prev}<br>
+                Next leap year: ${next}
+            `;
+        }
+
+        function convertUnix() {
+            const input = document.getElementById('unixInput').value;
+            const unix = parseInt(input);
+            const result = document.getElementById('unixResult');
+            
+            if (!unix) {
+                result.textContent = 'Please enter a valid Unix timestamp';
+                return;
+            }
+            
+            const date = new Date(unix * 1000);
+            result.innerHTML = `
+                <strong>Unix: ${unix}</strong><br>
+                Date: ${date.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'long' })}<br>
+                ISO: ${date.toISOString()}
+            `;
+        }
+
+        function getCurrentUnix() {
+            const now = Math.floor((Date.now() + timeOffset) / 1000);
+            document.getElementById('unixInput').value = now;
+            convertUnix();
+        }
+
+        function calculateTimezoneOffset() {
+            const tz1 = document.getElementById('tz1Select').value;
+            const tz2 = document.getElementById('tz2Select').value;
+            const result = document.getElementById('tzOffsetResult');
+            
+            const now = new Date(Date.now() + timeOffset);
+            
+            const time1 = now.toLocaleString('en-US', { timeZone: tz1, hour12: false });
+            const time2 = now.toLocaleString('en-US', { timeZone: tz2, hour12: false });
+            
+            const date1 = new Date(time1);
+            const date2 = new Date(time2);
+            
+            const diffMs = date1 - date2;
+            const diffHours = Math.floor(Math.abs(diffMs) / (1000 * 60 * 60));
+            const diffMins = Math.floor((Math.abs(diffMs) % (1000 * 60 * 60)) / (1000 * 60));
+            
+            const ahead = diffMs > 0 ? tz1 : tz2;
+            const behind = diffMs > 0 ? tz2 : tz1;
+            
+            result.innerHTML = `
+                <strong>Time Difference: ${diffHours}h ${diffMins}m</strong><br><br>
+                ${ahead} is ${Math.abs(diffHours)}h ${diffMins}m ahead of ${behind}<br>
+                When it's ${now.toLocaleTimeString('en-US', { timeZone: tz1, hour12: !use24Hour })} in ${tz1},<br>
+                it's ${now.toLocaleTimeString('en-US', { timeZone: tz2, hour12: !use24Hour })} in ${tz2}
+            `;
+        }
+
+        function startStopwatch() {
+            if (!stopwatchRunning) {
+                stopwatchStart = Date.now() - stopwatchElapsed;
+                stopwatchRunning = true;
+                stopwatchInterval = setInterval(updateStopwatch, 10);
+            }
+        }
+
+        function pauseStopwatch() {
+            if (stopwatchRunning) {
+                stopwatchRunning = false;
+                clearInterval(stopwatchInterval);
+                stopwatchElapsed = Date.now() - stopwatchStart;
+            }
+        }
+
+        function resetStopwatch() {
+            stopwatchRunning = false;
+            clearInterval(stopwatchInterval);
+            stopwatchElapsed = 0;
+            stopwatchStart = 0;
+            lapCount = 0;
+            document.getElementById('stopwatchDisplay').textContent = '00:00:00.000';
+            document.getElementById('lapTimes').textContent = 'Lap times will appear here';
+        }
+
+        function lapStopwatch() {
+            if (stopwatchRunning) {
+                lapCount++;
+                const elapsed = Date.now() - stopwatchStart;
+                const formatted = formatStopwatchTime(elapsed);
+                const lapDiv = document.getElementById('lapTimes');
+                if (lapCount === 1) {
+                    lapDiv.innerHTML = '';
+                }
+                lapDiv.innerHTML = `Lap ${lapCount}: ${formatted}<br>` + lapDiv.innerHTML;
+            }
+        }
+
+        function updateStopwatch() {
+            const elapsed = Date.now() - stopwatchStart;
+            document.getElementById('stopwatchDisplay').textContent = formatStopwatchTime(elapsed);
+        }
+
+        function formatStopwatchTime(ms) {
+            const hours = Math.floor(ms / 3600000);
+            const mins = Math.floor((ms % 3600000) / 60000);
+            const secs = Math.floor((ms % 60000) / 1000);
+            const millis = ms % 1000;
+            
+            return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}.${millis.toString().padStart(3, '0')}`;
         }
 
         function updateWorldClocks() {
