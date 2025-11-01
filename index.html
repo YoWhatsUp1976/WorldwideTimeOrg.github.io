@@ -302,6 +302,15 @@
         </div>
 
         <div class="world-clocks" id="worldClocks"></div>
+
+        <footer style="text-align: center; margin-top: 50px; padding: 30px 0; border-top: 3px solid #fff;">
+            <div style="font-size: 0.9em; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.8;">
+                Organization Director: <strong>YWU</strong>
+            </div>
+            <div style="font-size: 0.8em; letter-spacing: 0.15em; margin-top: 10px; opacity: 0.6;">
+                Worldwide Time Organization © 2025
+            </div>
+        </footer>
     </div>
 
     <script>
@@ -315,9 +324,14 @@
             status.textContent = 'Syncing with atomic time servers...';
             
             try {
-                const response = await fetch('https://worldtimeapi.org/api/timezone/' + mainTimezone);
-                const data = await response.json();
                 
+                const response = await fetch('https://worldtimeapi.org/api/timezone/' + mainTimezone);
+                
+                if (!response.ok) {
+                    throw new Error('WorldTimeAPI failed');
+                }
+                
+                const data = await response.json();
                 const serverTime = new Date(data.datetime);
                 const localTime = new Date();
                 timeOffset = serverTime - localTime;
@@ -327,7 +341,23 @@
                     status.textContent = 'Time synchronized • Precision: ±50ms';
                 }, 2000);
             } catch (error) {
-                status.textContent = '⚠ Using local system time - Network sync unavailable';
+            
+                try {
+                    const response = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=' + mainTimezone);
+                    const data = await response.json();
+                    const serverTime = new Date(data.dateTime);
+                    const localTime = new Date();
+                    timeOffset = serverTime - localTime;
+                    
+                    status.textContent = '✓ Synchronized with atomic clock - Offset: ' + Math.abs(timeOffset) + 'ms';
+                    setTimeout(() => {
+                        status.textContent = 'Time synchronized • Precision: ±50ms';
+                    }, 2000);
+                } catch (error2) {
+                    console.error('Sync error:', error2);
+                    status.textContent = '⚠ Using local system time - Network sync unavailable';
+                    timeOffset = 0;
+                }
             }
         }
 
@@ -364,7 +394,7 @@
                     
                     const time = now.toLocaleTimeString('en-US', {
                         timeZone: clock.timezone,
-                        hour12: false,
+                        hour12: !use24Hour,
                         hour: '2-digit',
                         minute: '2-digit',
                         second: '2-digit'
@@ -448,6 +478,10 @@
             mainTimezone = e.target.value;
             document.getElementById('mainTimezone').textContent = e.target.options[e.target.selectedIndex].text;
             syncTime();
+        });
+
+        document.getElementById('timeFormatSelect').addEventListener('change', (e) => {
+            use24Hour = e.target.value === '24';
         });
 
         syncTime();
