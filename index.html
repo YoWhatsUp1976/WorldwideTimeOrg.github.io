@@ -1,473 +1,776 @@
-import React, { useState, useEffect } from 'react';
-import { Clock, Globe, Info, AlertCircle, Calendar, Zap, Settings } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worldwide Time Organization | Official Time Keepers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-export default function Home() {
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [selectedTimezone, setSelectedTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
-  const [is24Hour, setIs24Hour] = useState(true);
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
 
-  const timezones = [
-    'UTC',
-    'America/New_York',
-    'America/Chicago',
-    'America/Denver',
-    'America/Los_Angeles',
-    'America/Anchorage',
-    'Pacific/Honolulu',
-    'America/Toronto',
-    'America/Vancouver',
-    'America/Mexico_City',
-    'America/Sao_Paulo',
-    'America/Buenos_Aires',
-    'Europe/London',
-    'Europe/Paris',
-    'Europe/Berlin',
-    'Europe/Madrid',
-    'Europe/Rome',
-    'Europe/Amsterdam',
-    'Europe/Brussels',
-    'Europe/Vienna',
-    'Europe/Stockholm',
-    'Europe/Oslo',
-    'Europe/Copenhagen',
-    'Europe/Helsinki',
-    'Europe/Warsaw',
-    'Europe/Prague',
-    'Europe/Budapest',
-    'Europe/Bucharest',
-    'Europe/Athens',
-    'Europe/Istanbul',
-    'Europe/Moscow',
-    'Africa/Cairo',
-    'Africa/Johannesburg',
-    'Africa/Nairobi',
-    'Africa/Lagos',
-    'Asia/Dubai',
-    'Asia/Kolkata',
-    'Asia/Shanghai',
-    'Asia/Tokyo',
-    'Asia/Seoul',
-    'Asia/Hong_Kong',
-    'Asia/Singapore',
-    'Asia/Bangkok',
-    'Asia/Jakarta',
-    'Asia/Manila',
-    'Asia/Taipei',
-    'Australia/Sydney',
-    'Australia/Melbourne',
-    'Australia/Brisbane',
-    'Australia/Perth',
-    'Pacific/Auckland',
-    'Pacific/Fiji',
-  ].sort();
+        header {
+            background: #000;
+            border-bottom: 1px solid #333;
+            padding: 2rem 0;
+            text-align: center;
+        }
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1);
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 3px;
+            color: #fff;
+        }
 
-    return () => clearInterval(interval);
-  }, []);
+        .subtitle {
+            color: #999;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-top: 0.5rem;
+        }
 
-  const getTimeInTimezone = () => {
-    return currentTime.toLocaleString('en-US', {
-      timeZone: selectedTimezone,
-      hour12: !is24Hour,
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    });
-  };
+        nav {
+            background: #111;
+            border-bottom: 1px solid #222;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 0.5rem;
+        }
 
-  const getDateInTimezone = () => {
-    return currentTime.toLocaleString('en-US', {
-      timeZone: selectedTimezone,
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
+        .tab {
+            background: transparent;
+            border: none;
+            color: #888;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+        }
 
-  const getMilliseconds = () => {
-    return currentTime.getMilliseconds().toString().padStart(3, '0');
-  };
+        .tab:hover {
+            color: #fff;
+        }
 
-  const getUTCOffset = () => {
-    const date = new Date(currentTime.toLocaleString('en-US', { timeZone: selectedTimezone }));
-    const utcDate = new Date(currentTime.toLocaleString('en-US', { timeZone: 'UTC' }));
-    const offset = (date.getTime() - utcDate.getTime()) / (1000 * 60 * 60);
-    const sign = offset >= 0 ? '+' : '';
-    return `UTC${sign}${offset}`;
-  };
+        .tab.active {
+            color: #fff;
+            border-bottom: 2px solid #fff;
+        }
 
-  const isLeapYear = (year) => {
-    return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
-  };
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
 
-  const getNextLeapYear = () => {
-    const currentYear = currentTime.getFullYear();
-    let nextYear = currentYear + 1;
-    while (!isLeapYear(nextYear)) {
-      nextYear++;
-    }
-    return nextYear;
-  };
+        .tab-content {
+            display: none;
+        }
 
-  const getDaysUntilNextLeapYear = () => {
-    const nextLeapYear = getNextLeapYear();
-    const nextLeapYearDate = new Date(nextLeapYear, 0, 1);
-    const diffTime = nextLeapYearDate - currentTime;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
 
-  const leapSeconds = [
-    { date: '2017-01-01', description: 'Latest leap second added' },
-    { date: '2015-07-01', description: 'Leap second added' },
-    { date: '2012-07-01', description: 'Leap second added' },
-    { date: '2009-01-01', description: 'Leap second added' },
-    { date: '2006-01-01', description: 'Leap second added' },
-  ];
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
 
-  return (
-    <div className="min-h-screen bg-black text-white">
-      <header className="border-b border-gray-800 bg-gray-950">
-        <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                <Clock className="w-6 h-6 text-black" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold tracking-tight">Worldwide Time Organization</h1>
-                <p className="text-sm text-gray-500">Synchronized with Atomic Clocks</p>
-              </div>
+        .time-display {
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .main-time {
+            font-size: 5rem;
+            font-weight: 200;
+            color: #fff;
+            letter-spacing: 5px;
+            margin: 1rem 0;
+        }
+
+        .milliseconds {
+            font-size: 2rem;
+            color: #666;
+            font-weight: 300;
+        }
+
+        .date-display {
+            font-size: 1.5rem;
+            color: #999;
+            margin-top: 1rem;
+        }
+
+        .timezone-selector {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        select, .format-toggle {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 0 0.5rem;
+            border-radius: 3px;
+        }
+
+        select:hover, .format-toggle:hover {
+            border-color: #666;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .info-card {
+            background: #111;
+            border: 1px solid #222;
+            padding: 2rem;
+            border-radius: 5px;
+        }
+
+        .info-card h3 {
+            color: #fff;
+            margin-bottom: 1rem;
+            font-weight: 400;
+            letter-spacing: 2px;
+        }
+
+        .info-card p {
+            color: #999;
+            line-height: 1.8;
+        }
+
+        .data-item {
+            background: #0d0d0d;
+            border: 1px solid #1a1a1a;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 3px;
+        }
+
+        .data-label {
+            color: #666;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .data-value {
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: 300;
+        }
+
+        .atomic-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #0f0;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        .atomic-indicator.syncing {
+            background: #ff0;
+        }
+
+        .atomic-indicator.error {
+            background: #f00;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .sync-status {
+            text-align: center;
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 2rem;
+        }
+
+        footer {
+            background: #000;
+            border-top: 1px solid #222;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        .warning-banner {
+            background: #1a1a00;
+            border: 1px solid #333300;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 3px;
+            color: #ffff99;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>WORLDWIDE TIME ORGANIZATION</h1>
+        <p class="subtitle">OFFICIAL GLOBAL TIME KEEPERS</p>
+    </header>
+
+    <nav>
+        <button class="tab active" onclick="switchTab('current')">CURRENT TIME</button>
+        <button class="tab" onclick="switchTab('leap-seconds')">LEAP SECONDS</button>
+        <button class="tab" onclick="switchTab('leap-hours')">LEAP HOURS</button>
+        <button class="tab" onclick="switchTab('leap-years')">LEAP YEARS</button>
+        <button class="tab" onclick="switchTab('atomic')">ATOMIC TIME</button>
+        <button class="tab" onclick="switchTab('about')">ABOUT</button>
+    </nav>
+
+    <div class="container">
+        <div id="current" class="tab-content active">
+            <div class="timezone-selector">
+                <select id="timezoneSelect" onchange="updateTimezone()">
+                    <option value="UTC">UTC (Coordinated Universal Time)</option>
+                    <option value="America/New_York">Eastern Time (ET)</option>
+                    <option value="America/Chicago">Central Time (CT)</option>
+                    <option value="America/Denver">Mountain Time (MT)</option>
+                    <option value="America/Los_Angeles">Pacific Time (PT)</option>
+                    <option value="America/Anchorage">Alaska Time (AKT)</option>
+                    <option value="Pacific/Honolulu">Hawaii Time (HST)</option>
+                    <option value="Europe/London">London (GMT/BST)</option>
+                    <option value="Europe/Paris">Paris (CET/CEST)</option>
+                    <option value="Europe/Berlin">Berlin (CET/CEST)</option>
+                    <option value="Europe/Moscow">Moscow (MSK)</option>
+                    <option value="Asia/Dubai">Dubai (GST)</option>
+                    <option value="Asia/Kolkata">India (IST)</option>
+                    <option value="Asia/Shanghai">Shanghai (CST)</option>
+                    <option value="Asia/Tokyo">Tokyo (JST)</option>
+                    <option value="Asia/Seoul">Seoul (KST)</option>
+                    <option value="Australia/Sydney">Sydney (AEDT/AEST)</option>
+                    <option value="Pacific/Auckland">Auckland (NZDT/NZST)</option>
+                </select>
+                <button class="format-toggle" onclick="toggleFormat()">12/24 HOUR</button>
             </div>
-            <Badge variant="outline" className="border-green-500 text-green-500 hidden sm:flex">
-              <Zap className="w-3 h-3 mr-1" />
-              LIVE
-            </Badge>
-          </div>
+
+            <div class="time-display">
+                <div class="main-time" id="mainTime">00:00:00</div>
+                <div class="milliseconds" id="milliseconds">.000</div>
+                <div class="date-display" id="dateDisplay">Loading...</div>
+            </div>
+
+            <div class="sync-status">
+                <span class="atomic-indicator" id="syncIndicator"></span>
+                <span id="syncMessage">SYNCHRONIZED WITH WORLDTIMEAPI.ORG (NTP-BASED)</span>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>TIMEZONE INFORMATION</h3>
+                    <div class="data-item">
+                        <div class="data-label">Current Timezone</div>
+                        <div class="data-value" id="tzName">UTC</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">UTC Offset</div>
+                        <div class="data-value" id="tzOffset">+00:00</div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3>UNIX TIMESTAMP</h3>
+                    <div class="data-item">
+                        <div class="data-label">Seconds Since Epoch</div>
+                        <div class="data-value" id="unixTime">0</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Milliseconds</div>
+                        <div class="data-value" id="unixMs">0</div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3>TIME SERVER SYNC</h3>
+                    <div class="data-item">
+                        <div class="data-label">Last Sync</div>
+                        <div class="data-value" id="lastSync">Never</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Offset from Server</div>
+                        <div class="data-value" id="serverOffset">Calculating...</div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <Card className="border-2 border-gray-800 bg-gray-950 shadow-2xl mb-8">
-          <CardContent className="p-6 sm:p-10">
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-4 mb-8">
-              <div className="flex items-center gap-3 w-full lg:w-auto">
-                <Globe className="w-5 h-5 text-gray-400" />
-                <Select value={selectedTimezone} onValueChange={setSelectedTimezone}>
-                  <SelectTrigger className="w-full lg:w-80 border-gray-700 bg-black text-white">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-80 bg-gray-950 border-gray-700">
-                    {timezones.map((tz) => (
-                      <SelectItem key={tz} value={tz} className="text-white">
-                        {tz.replace(/_/g, ' ')}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <Settings className="w-4 h-4 text-gray-400" />
-                <Label htmlFor="time-format" className="text-gray-400">24H</Label>
-                <Switch
-                  id="time-format"
-                  checked={is24Hour}
-                  onCheckedChange={setIs24Hour}
-                  className="data-[state=checked]:bg-white"
-                />
-              </div>
+        <div id="leap-seconds" class="tab-content">
+            <h2 style="text-align: center; margin-bottom: 2rem; font-weight: 300; letter-spacing: 2px;">LEAP SECONDS</h2>
+            
+            <div class="info-card">
+                <h3>WHAT ARE LEAP SECONDS?</h3>
+                <p>A leap second is a one-second adjustment applied to Coordinated Universal Time (UTC) to keep it synchronized with Earth's rotation. Since Earth's rotation is gradually slowing, leap seconds are occasionally added to atomic time to maintain alignment with solar time.</p>
             </div>
 
-            <div className="text-center mb-6">
-              <div className="font-mono text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold text-white mb-2 tracking-tighter">
-                {getTimeInTimezone()}
-                <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-gray-500">
-                  .{getMilliseconds()}
-                </span>
-              </div>
-              <div className="text-lg sm:text-xl md:text-2xl text-gray-400 font-medium mt-4">
-                {getDateInTimezone()}
-              </div>
-              <div className="text-base sm:text-lg text-gray-500 mt-2 font-mono">
-                {getUTCOffset()}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 pt-8 border-t border-gray-800">
-              <div className="text-center">
-                <div className="text-sm text-gray-500 uppercase tracking-wide mb-1">Timezone</div>
-                <div className="text-base sm:text-lg font-semibold text-white">{selectedTimezone.replace(/_/g, ' ')}</div>
-              </div>
-              <div className="text-center">
-                <div className="text-sm text-gray-500 uppercase tracking-wide mb-1">Precision</div>
-                <div className="text-base sm:text-lg font-semibold text-white">±1 Millisecond</div>
-              </div>
-              <div className="text-center">
-                <div className="text-sm text-gray-500 uppercase tracking-wide mb-1">Source</div>
-                <div className="text-base sm:text-lg font-semibold text-white">Atomic Clock</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Tabs defaultValue="leap-years" className="w-full">
-          <TabsList className="w-full bg-gray-950 border border-gray-800 grid grid-cols-2 lg:grid-cols-4 gap-2 p-2">
-            <TabsTrigger value="leap-years" className="data-[state=active]:bg-white data-[state=active]:text-black">
-              Leap Years
-            </TabsTrigger>
-            <TabsTrigger value="leap-seconds" className="data-[state=active]:bg-white data-[state=active]:text-black">
-              Leap Seconds
-            </TabsTrigger>
-            <TabsTrigger value="standards" className="data-[state=active]:bg-white data-[state=active]:text-black">
-              Standards
-            </TabsTrigger>
-            <TabsTrigger value="about" className="data-[state=active]:bg-white data-[state=active]:text-black">
-              About
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="leap-years" className="mt-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="border-gray-800 bg-gray-950">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-white">
-                    <Calendar className="w-5 h-5" />
-                    Current Year Status
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center">
-                    <div className="text-5xl font-bold mb-2">
-                      {currentTime.getFullYear()}
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>TOTAL LEAP SECONDS</h3>
+                    <div class="data-item">
+                        <div class="data-label">Since 1972</div>
+                        <div class="data-value">27</div>
                     </div>
-                    <Badge className={isLeapYear(currentTime.getFullYear()) ? "bg-green-500" : "bg-gray-700"}>
-                      {isLeapYear(currentTime.getFullYear()) ? "IS A LEAP YEAR" : "NOT A LEAP YEAR"}
-                    </Badge>
-                    <p className="text-gray-400 mt-4 text-sm">
-                      {isLeapYear(currentTime.getFullYear()) 
-                        ? "This year has 366 days including February 29th"
-                        : "This year has 365 days"}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-gray-800 bg-gray-950">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-white">
-                    <AlertCircle className="w-5 h-5" />
-                    Next Leap Year
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center">
-                    <div className="text-5xl font-bold mb-2">
-                      {getNextLeapYear()}
+                    <div class="data-item">
+                        <div class="data-label">Last Added</div>
+                        <div class="data-value">December 31, 2016</div>
                     </div>
-                    <Badge variant="outline" className="border-blue-500 text-blue-500">
-                      IN {getDaysUntilNextLeapYear()} DAYS
-                    </Badge>
-                    <p className="text-gray-400 mt-4 text-sm">
-                      The next leap year will add an extra day to February
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-gray-800 bg-gray-950 md:col-span-2">
-                <CardHeader>
-                  <CardTitle className="text-white">Leap Year Rules</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3 text-gray-300">
-                    <p className="flex items-start gap-2">
-                      <span className="text-white font-bold">1.</span>
-                      A year is a leap year if it is divisible by 4
-                    </p>
-                    <p className="flex items-start gap-2">
-                      <span className="text-white font-bold">2.</span>
-                      However, if the year is divisible by 100, it is NOT a leap year
-                    </p>
-                    <p className="flex items-start gap-2">
-                      <span className="text-white font-bold">3.</span>
-                      Unless the year is also divisible by 400, then it IS a leap year
-                    </p>
-                    <p className="text-sm text-gray-500 mt-4 italic">
-                      Example: 2000 was a leap year (divisible by 400), but 1900 was not (divisible by 100 but not 400)
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="leap-seconds" className="mt-6">
-            <Card className="border-gray-800 bg-gray-950">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-white">
-                  <Zap className="w-5 h-5" />
-                  Leap Second History
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-300 mb-6">
-                  Leap seconds are occasional one-second adjustments added to Coordinated Universal Time (UTC) 
-                  to keep it synchronized with astronomical time. They account for the irregular slowing of Earth's rotation.
-                </p>
-                <div className="space-y-4">
-                  {leapSeconds.map((leap, index) => (
-                    <div key={index} className="flex items-center justify-between p-4 border border-gray-800 rounded-lg bg-black">
-                      <div>
-                        <div className="font-semibold text-white">{leap.date}</div>
-                        <div className="text-sm text-gray-400">{leap.description}</div>
-                      </div>
-                      <Badge variant="outline" className="border-yellow-500 text-yellow-500">
-                        +1s
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-6 p-4 bg-black border border-gray-800 rounded-lg">
-                  <h4 className="font-semibold text-white mb-2">Key Facts</h4>
-                  <ul className="space-y-2 text-sm text-gray-300">
-                    <li>• Total of 27 leap seconds have been added since 1972</li>
-                    <li>• The last leap second was added on December 31, 2016</li>
-                    <li>• Leap seconds are announced by the IERS (International Earth Rotation Service)</li>
-                    <li>• Our atomic clocks automatically account for leap seconds</li>
-                  </ul>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="standards" className="mt-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="border-gray-800 bg-gray-950">
-                <CardHeader>
-                  <CardTitle className="text-white">UTC (Coordinated Universal Time)</CardTitle>
-                </CardHeader>
-                <CardContent className="text-gray-300 space-y-3">
-                  <p>The primary time standard by which the world regulates clocks and time.</p>
-                  <ul className="space-y-2 text-sm">
-                    <li>• Based on International Atomic Time (TAI)</li>
-                    <li>• Adjusted with leap seconds</li>
-                    <li>• Used as the basis for all timezones</li>
-                    <li>• Maintained by atomic clocks worldwide</li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card className="border-gray-800 bg-gray-950">
-                <CardHeader>
-                  <CardTitle className="text-white">Atomic Clock Accuracy</CardTitle>
-                </CardHeader>
-                <CardContent className="text-gray-300 space-y-3">
-                  <p>The most accurate timekeeping devices ever created.</p>
-                  <ul className="space-y-2 text-sm">
-                    <li>• Accurate to within 1 second per 100 million years</li>
-                    <li>• Based on cesium-133 atom oscillations</li>
-                    <li>• Defines the international second</li>
-                    <li>• Used in GPS, telecommunications, and science</li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card className="border-gray-800 bg-gray-950 md:col-span-2">
-                <CardHeader>
-                  <CardTitle className="text-white">Global Timekeeping Network</CardTitle>
-                </CardHeader>
-                <CardContent className="text-gray-300">
-                  <p className="mb-4">
-                    Our system synchronizes with the international network of atomic clocks operated by:
-                  </p>
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div className="p-3 bg-black border border-gray-800 rounded-lg">
-                      <div className="font-semibold text-white mb-1">NIST (USA)</div>
-                      <div className="text-sm text-gray-400">National Institute of Standards and Technology</div>
-                    </div>
-                    <div className="p-3 bg-black border border-gray-800 rounded-lg">
-                      <div className="font-semibold text-white mb-1">BIPM (France)</div>
-                      <div className="text-sm text-gray-400">International Bureau of Weights and Measures</div>
-                    </div>
-                    <div className="p-3 bg-black border border-gray-800 rounded-lg">
-                      <div className="font-semibold text-white mb-1">PTB (Germany)</div>
-                      <div className="text-sm text-gray-400">Physikalisch-Technische Bundesanstalt</div>
-                    </div>
-                    <div className="p-3 bg-black border border-gray-800 rounded-lg">
-                      <div className="font-semibold text-white mb-1">NICT (Japan)</div>
-                      <div className="text-sm text-gray-400">National Institute of Information and Communications</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="about" className="mt-6">
-            <Card className="border-gray-800 bg-gray-950">
-              <CardContent className="p-8 sm:p-12">
-                <div className="text-center mb-8">
-                  <Info className="w-16 h-16 mx-auto mb-4 text-white" />
-                  <h3 className="text-3xl font-bold mb-4 text-white">Our Mission</h3>
-                  <p className="text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                    The Worldwide Time Organization is dedicated to providing the most accurate and accessible
-                    time information to people around the globe. We believe that precise timekeeping is
-                    fundamental to modern life, enabling coordination, synchronization, and punctuality
-                    across all human endeavors.
-                  </p>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-6 mt-8">
-                  <div className="p-6 bg-black border border-gray-800 rounded-lg">
-                    <Clock className="w-8 h-8 mb-3 text-white" />
-                    <h4 className="text-xl font-bold mb-2 text-white">Millisecond Precision</h4>
-                    <p className="text-gray-400">
-                      Our clocks display time down to the millisecond, synchronized with atomic clocks
-                      for unparalleled accuracy in all your timekeeping needs.
-                    </p>
-                  </div>
-
-                  <div className="p-6 bg-black border border-gray-800 rounded-lg">
-                    <Globe className="w-8 h-8 mb-3 text-white" />
-                    <h4 className="text-xl font-bold mb-2 text-white">Global Coverage</h4>
-                    <p className="text-gray-400">
-                      Access precise time information for every major timezone across the globe,
-                      from New York to Tokyo and everywhere in between.
-                    </p>
-                  </div>
+                <div class="info-card">
+                    <h3>TAI - UTC DIFFERENCE</h3>
+                    <div class="data-item">
+                        <div class="data-label">Current Offset</div>
+                        <div class="data-value">37 seconds</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">TAI (Atomic Time) is ahead of UTC</div>
+                        <div class="data-value">Since leap seconds compensate</div>
+                    </div>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </main>
+            </div>
 
-      <footer className="border-t border-gray-800 bg-gray-950 mt-20">
-        <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-          <div className="text-center text-gray-400">
-            <p className="font-semibold text-white mb-2">Worldwide Time Organization</p>
-            <p className="text-sm">© 2025 All rights reserved. Keeping time for the world.</p>
-          </div>
+            <div class="info-card" style="margin-top: 2rem;">
+                <h3>RECENT LEAP SECONDS</h3>
+                <div class="data-item">
+                    <div class="data-label">2016-12-31 23:59:60 UTC</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">2015-06-30 23:59:60 UTC</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">2012-06-30 23:59:60 UTC</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">2008-12-31 23:59:60 UTC</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">2005-12-31 23:59:60 UTC</div>
+                </div>
+            </div>
         </div>
-      </footer>
+
+        <div id="leap-hours" class="tab-content">
+            <h2 style="text-align: center; margin-bottom: 2rem; font-weight: 300; letter-spacing: 2px;">LEAP HOURS</h2>
+            
+            <div class="warning-banner">
+                <strong>⚠ IMPORTANT NOTE:</strong> "Leap hours" are not an official timekeeping adjustment in atomic time standards. This tracker monitors Daylight Saving Time (DST) transitions, which create hour shifts in civil timekeeping.
+            </div>
+
+            <div class="info-card">
+                <h3>WHAT ARE "LEAP HOURS"?</h3>
+                <p>While not an official term in horology, "leap hours" commonly refers to Daylight Saving Time (DST) transitions where clocks "spring forward" (losing an hour) or "fall back" (gaining an hour). These are adjustments to civil time, not atomic time standards like UTC or TAI.</p>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>DST STATUS (US TIMEZONES)</h3>
+                    <div class="data-item">
+                        <div class="data-label">Current Status</div>
+                        <div class="data-value" id="dstStatus">Calculating...</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Next Transition</div>
+                        <div class="data-value" id="nextDSTTransition">Calculating...</div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3>2025 DST TRANSITIONS</h3>
+                    <div class="data-item">
+                        <div class="data-label">Spring Forward (Lost Hour)</div>
+                        <div class="data-value">March 9, 2025 at 2:00 AM</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Fall Back (Gained Hour)</div>
+                        <div class="data-value">November 2, 2025 at 2:00 AM</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card" style="margin-top: 2rem;">
+                <h3>UPCOMING DST TRANSITIONS (US)</h3>
+                <div class="data-item">
+                    <div class="data-label">2026 Spring Forward</div>
+                    <div class="data-value">March 8, 2026</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">2026 Fall Back</div>
+                    <div class="data-value">November 1, 2026</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">2027 Spring Forward</div>
+                    <div class="data-value">March 14, 2027</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">2027 Fall Back</div>
+                    <div class="data-value">November 7, 2027</div>
+                </div>
+            </div>
+
+            <div class="info-card" style="margin-top: 2rem;">
+                <h3>GLOBAL DST VARIATIONS</h3>
+                <p>Not all countries observe Daylight Saving Time. Countries near the equator typically don't use DST. The European Union observes DST on different dates than North America (last Sunday in March and October). Some regions like Arizona (except Navajo Nation) and Hawaii in the US don't observe DST at all.</p>
+            </div>
+        </div>
+
+        <div id="leap-years" class="tab-content">
+            <h2 style="text-align: center; margin-bottom: 2rem; font-weight: 300; letter-spacing: 2px;">LEAP YEARS</h2>
+            
+            <div class="info-card">
+                <h3>WHAT ARE LEAP YEARS?</h3>
+                <p>A leap year contains 366 days instead of the usual 365. An extra day (February 29) is added to keep the calendar year synchronized with the astronomical year. A year is a leap year if it's divisible by 4, except for century years which must be divisible by 400.</p>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>CURRENT YEAR STATUS</h3>
+                    <div class="data-item">
+                        <div class="data-label">Year</div>
+                        <div class="data-value" id="currentYear">2025</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Leap Year Status</div>
+                        <div class="data-value" id="leapStatus">Not a Leap Year</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Days in Year</div>
+                        <div class="data-value" id="daysInYear">365</div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3>NEXT LEAP YEAR</h3>
+                    <div class="data-item">
+                        <div class="data-label">Year</div>
+                        <div class="data-value" id="nextLeapYear">2028</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Days Until</div>
+                        <div class="data-value" id="daysUntilLeap">Calculating...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card" style="margin-top: 2rem;">
+                <h3>RECENT & UPCOMING LEAP YEARS</h3>
+                <div class="data-item">
+                    <div class="data-label">2020 • 2024 • 2028 • 2032 • 2036 • 2040 • 2044 • 2048</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="atomic" class="tab-content">
+            <h2 style="text-align: center; margin-bottom: 2rem; font-weight: 300; letter-spacing: 2px;">ATOMIC TIME</h2>
+            
+            <div class="info-card">
+                <h3>INTERNATIONAL ATOMIC TIME (TAI)</h3>
+                <p>International Atomic Time (TAI) is a high-precision time standard based on the average of over 400 atomic clocks worldwide. Unlike UTC, TAI is not adjusted for leap seconds and provides a continuous time scale for scientific applications.</p>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>CURRENT TAI TIME</h3>
+                    <div class="data-item">
+                        <div class="data-label">TAI is UTC + 37 seconds</div>
+                        <div class="data-value" id="taiTime">Calculating...</div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3>ATOMIC CLOCK ACCURACY</h3>
+                    <div class="data-item">
+                        <div class="data-label">Modern cesium clocks</div>
+                        <div class="data-value">±1 second in 100 million years</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Optical lattice clocks</div>
+                        <div class="data-value">±1 second in 15 billion years</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card" style="margin-top: 2rem;">
+                <h3>HOW ATOMIC CLOCKS WORK</h3>
+                <p>Atomic clocks measure time based on the resonance frequency of atoms, typically cesium-133. One second is defined as 9,192,631,770 oscillations of the cesium atom's radiation. This provides the most accurate time measurement possible, forming the basis for UTC and global time synchronization.</p>
+            </div>
+
+            <div class="info-card" style="margin-top: 2rem;">
+                <h3>MAJOR ATOMIC TIME FACILITIES</h3>
+                <div class="data-item">
+                    <div class="data-label">NIST (USA)</div>
+                    <div class="data-value">National Institute of Standards and Technology</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">USNO (USA)</div>
+                    <div class="data-value">United States Naval Observatory</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">PTB (Germany)</div>
+                    <div class="data-value">Physikalisch-Technische Bundesanstalt</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">BIPM (France)</div>
+                    <div class="data-value">International Bureau of Weights and Measures</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="about" class="tab-content">
+            <h2 style="text-align: center; margin-bottom: 2rem; font-weight: 300; letter-spacing: 2px;">ABOUT WTO</h2>
+            
+            <div class="info-card">
+                <h3>OUR MISSION</h3>
+                <p>The Worldwide Time Organization is dedicated to providing accurate, atomic-synchronized time information to people across the globe. We maintain precise time standards and educate the public about timekeeping systems, leap seconds, and the science behind atomic time.</p>
+            </div>
+
+            <div class="info-card">
+                <h3>TIME STANDARDS & SYNCHRONIZATION</h3>
+                <p>Our time displays synchronize with WorldTimeAPI.org, which uses NTP (Network Time Protocol) servers connected to atomic clock networks. The site automatically syncs every 5 minutes to maintain accuracy. All times follow international standards established by the International Bureau of Weights and Measures (BIPM) and the International Earth Rotation and Reference Systems Service (IERS).</p>
+            </div>
+
+            <div class="info-card">
+                <h3>ACCURACY & LIMITATIONS</h3>
+                <p>While we sync with atomic time sources via NTP, browser-based applications have limitations. Network latency, device clock drift, and browser performance affect precision. For scientific applications requiring atomic-level accuracy, consult official atomic clock facilities like NIST or USNO directly.</p>
+            </div>
+
+            <div class="info-card">
+                <h3>DATA SOURCES</h3>
+                <div class="data-item">
+                    <div class="data-label">Primary Time Source</div>
+                    <div class="data-value">WorldTimeAPI.org (NTP-based)</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Leap Second Data</div>
+                    <div class="data-value">IERS Bulletin C</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Timezone Database</div>
+                    <div class="data-value">IANA Time Zone Database</div>
+                </div>
+            </div>
+        </div>
     </div>
-  );
-}
+
+    <footer>
+        <p>WORLDWIDE TIME ORGANIZATION © 2025 | PRECISION TIMEKEEPING FOR THE WORLD</p>
+        <p style="margin-top: 0.5rem;">Synchronized with NTP Servers Connected to Atomic Clock Networks</p>
+    </footer>
+
+    <script>
+        let selectedTimezone = 'UTC';
+        let is24Hour = true;
+        let timeOffset = 0;
+        let lastSyncTime = null;
+        let syncInterval = null;
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function updateTimezone() {
+            selectedTimezone = document.getElementById('timezoneSelect').value;
+        }
+
+        function toggleFormat() {
+            is24Hour = !is24Hour;
+        }
+
+        function isLeapYear(year) {
+            return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+        }
+
+        function getNextLeapYear(year) {
+            let next = year + 1;
+            while (!isLeapYear(next)) {
+                next++;
+            }
+            return next;
+        }
+
+        async function syncWithAtomicTime() {
+            const indicator = document.getElementById('syncIndicator');
+            const message = document.getElementById('syncMessage');
+            
+            indicator.className = 'atomic-indicator syncing';
+            message.textContent = 'SYNCING WITH TIME SERVER...';
+            
+            try {
+                const response = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC');
+                const data = await response.json();
+                
+                const serverTime = new Date(data.datetime).getTime();
+                const localTime = Date.now();
+                timeOffset = serverTime - localTime;
+                lastSyncTime = new Date();
+                
+                indicator.className = 'atomic-indicator';
+                message.textContent = 'SYNCHRONIZED WITH WORLDTIMEAPI.ORG (NTP-BASED)';
+                
+                document.getElementById('lastSync').textContent = lastSyncTime.toLocaleTimeString();
+                document.getElementById('serverOffset').textContent = timeOffset + ' ms';
+            } catch (error) {
+                indicator.className = 'atomic-indicator error';
+                message.textContent = 'SYNC FAILED - USING LOCAL TIME';
+                console.error('Time sync error:', error);
+            }
+        }
+
+        function getCurrentTime() {
+            return new Date(Date.now() + timeOffset);
+        }
+
+        function checkDSTStatus() {
+            const now = new Date();
+            const jan = new Date(now.getFullYear(), 0, 1);
+            const jul = new Date(now.getFullYear(), 6, 1);
+            const stdOffset = Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+            const isDST = now.getTimezoneOffset() < stdOffset;
+            
+            document.getElementById('dstStatus').textContent = isDST ? 'Daylight Saving Time Active' : 'Standard Time Active';
+            
+            // Calculate next DST transition for US
+            const year = now.getFullYear();
+            const springForward = new Date(year, 2, 14 - new Date(year, 2, 1).getDay()); // Second Sunday of March
+            springForward.setHours(2, 0, 0, 0);
+            
+            const fallBack = new Date(year, 10, 7 - new Date(year, 10, 1).getDay()); // First Sunday of November
+            fallBack.setHours(2, 0, 0, 0);
+            
+            let nextTransition;
+            if (now < springForward) {
+                nextTransition = springForward;
+            } else if (now < fallBack) {
+                nextTransition = fallBack;
+            } else {
+                nextTransition = new Date(year + 1, 2, 14 - new Date(year + 1, 2, 1).getDay());
+                nextTransition.setHours(2, 0, 0, 0);
+            }
+            
+            const daysUntil = Math.ceil((nextTransition - now) / (1000 * 60 * 60 * 24));
+            document.getElementById('nextDSTTransition').textContent = 
+                nextTransition.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) + 
+                ` (${daysUntil} days)`;
+        }
+
+        function updateTime() {
+            const now = getCurrentTime();
+            
+            // Format time for selected timezone
+            const options = {
+                timeZone: selectedTimezone,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: !is24Hour
+            };
+            
+            const timeStr = now.toLocaleTimeString('en-US', options);
+            const ms = now.getMilliseconds().toString().padStart(3, '0');
+            
+            document.getElementById('mainTime').textContent = timeStr;
+            document.getElementById('milliseconds').textContent = '.' + ms;
+            
+            // Date display
+            const dateOptions = {
+                timeZone: selectedTimezone,
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+            document.getElementById('dateDisplay').textContent = now.toLocaleDateString('en-US', dateOptions);
+            
+            // Timezone info
+            const tzName = selectedTimezone === 'UTC' ? 'UTC' : selectedTimezone.replace('_', ' ');
+            document.getElementById('tzName').textContent = tzName;
+            
+            // UTC offset
+            const formatter = new Intl.DateTimeFormat('en-US', {
+                timeZone: selectedTimezone,
+                timeZoneName: 'longOffset'
+            });
+            const parts = formatter.formatToParts(now);
+            const offsetPart = parts.find(part => part.type === 'timeZoneName');
+            document.getElementById('tzOffset').textContent = offsetPart ? offsetPart.value.replace('GMT', '') : '+00:00';
+            
+            // Unix timestamp
+            const unixSeconds = Math.floor(now.getTime() / 1000);
+            document.getElementById('unixTime').textContent = unixSeconds.toLocaleString();
+            document.getElementById('unixMs').textContent = now.getTime().toLocaleString();
+            
+            // TAI time (TAI is UTC + 37 seconds as of 2017)
+            const taiDate = new Date(now.getTime() + 37000);
+            const taiOptions = {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            };
+            document.getElementById('taiTime').textContent = taiDate.toLocaleTimeString('en-US', taiOptions) + ' TAI';
+            
+            // Leap year calculations
+            const currentYear = now.getFullYear();
+            document.getElementById('currentYear').textContent = currentYear;
+            
+            const isLeap = isLeapYear(currentYear);
+            document.getElementById('leapStatus').textContent = isLeap ? 'Leap Year' : 'Not a Leap Year';
+            document.getElementById('daysInYear').textContent = isLeap ? '366' : '365';
+            
+            const nextLeap = getNextLeapYear(currentYear);
+            document.getElementById('nextLeapYear').textContent = nextLeap;
+            
+            // Days until next leap year
+            const nextLeapDate = new Date(nextLeap, 0, 1);
+            const daysUntil = Math.ceil((nextLeapDate - now) / (1000 * 60 * 60 * 24));
+            document.getElementById('daysUntilLeap').textContent = daysUntil.toLocaleString() + ' days';
+        }
+
+        // Initial sync and setup interval to sync every 5 minutes
+        syncWithAtomicTime();
+        syncInterval = setInterval(syncWithAtomicTime, 5 * 60 * 1000);
+        
+        // Update DST status
+        checkDSTStatus();
+        
+        // Update time every millisecond for smooth display
+        setInterval(updateTime, 1);
+        updateTime();
+    </script>
+</body>
+</html>
